@@ -10,4 +10,4 @@
 // a ningún lado -- queda solo en la memoria del navegador y se pierde al
 // cerrar la pestaña. Reemplazá el valor de acá abajo por la URL real recién
 // hagas el deploy del Web App.
-window.SURVEY_ENDPOINT = "COMPLETAR: pegar acá la URL del Web App de Apps Script (termina en /exec)";
+window.SURVEY_ENDPOINT = "https://script.google.com/macros/s/AKfycbybeXwuWWqKg0mOmgF6dXQ0WfnFnZvlZoG3K8KFFV4M8jV7S0c4Zxcw5TzPGJC6sM_ZPw/exec";
