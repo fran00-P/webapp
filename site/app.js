@@ -43,6 +43,18 @@
   // así que se comporta exactamente igual que antes.
   const LOCKED_RESPONDENT = window.LOCKED_RESPONDENT === true;
 
+  // Páginas de Ola 2 de link fijo (ola2_tratados.html / ola2_control.html):
+  // reemplazan al email automático de invitación (que llevaba pid/arm en la
+  // URL) por un único link por grupo, compartido a mano. Como ese link no
+  // trae pid/arm de nadie en particular, cada persona se autoidentifica con
+  // su email al empezar (ver O2T_Email/O2C_Email en survey_content.py), y
+  // eso es lo que hay que usar después para juntar esa fila con la de su
+  // Ola 1 -- NO el "arm" guardado, que acá es solo "TRATADO" o "T0" (no se
+  // sabe cuál de los brazos tratados le tocó realmente; eso está en su fila
+  // de Ola 1). window.FIXED_WAVE2_GROUP vale "tratados" o "control".
+  const FIXED_WAVE2_GROUP = window.FIXED_WAVE2_GROUP || null;
+  const FIXED_WAVE2_ARM = { tratados: "TRATADO", control: "T0" };
+
   // ------------------------------------------------------------------ state
   const state = {
     mode: LOCKED_RESPONDENT ? "respondent" : "editor",
@@ -936,8 +948,12 @@
     if (r.ended) {
       root.appendChild(el("h2", { class: "block-title" }, [document.createTextNode("Encuesta finalizada")]));
       root.appendChild(el("p", {}, [document.createTextNode(r.endMessage)]));
-      document.getElementById("prev-btn").disabled = true;
-      document.getElementById("next-btn").disabled = true;
+      // A pedido del usuario: al terminar, los botones "Anterior"/
+      // "Siguiente" desaparecen del todo (antes quedaban visibles pero
+      // deshabilitados) -- no hay nada más para hacer en esta sesión.
+      document.getElementById("prev-btn").style.display = "none";
+      document.getElementById("next-btn").style.display = "none";
+      document.getElementById("validation-msg").textContent = "";
       return;
     }
 
@@ -988,6 +1004,11 @@
 
     const visible = getVisibleBlockIndices();
     const posInVisible = visible.indexOf(r.blockIndex);
+    // Restaurar la visibilidad de los botones (por si la encuesta anterior
+    // había terminado y los había ocultado -- ver el caso "r.ended" más
+    // arriba -- y ahora se reinició una nueva).
+    document.getElementById("prev-btn").style.display = "";
+    document.getElementById("next-btn").style.display = "";
     document.getElementById("prev-btn").disabled = posInVisible <= 0;
     document.getElementById("next-btn").disabled = false;
     document.getElementById("next-btn").textContent =
@@ -1165,8 +1186,29 @@
   // ya en la Ola 2, con el arm que le tocó en la Ola 1 (no se vuelve a
   // aleatorizar). Si no, es una sesión normal de Ola 1 con un pid nuevo.
   function initFromUrl() {
-    const params = getUrlParams();
     const firstWave2Index = BLOCKS.findIndex((b) => b.wave === 2);
+
+    // Página de Ola 2 de link fijo (ver FIXED_WAVE2_GROUP más arriba): no
+    // depende de nada que venga por la URL, arranca siempre igual para
+    // cualquiera que abra ese link.
+    if (FIXED_WAVE2_GROUP && FIXED_WAVE2_ARM[FIXED_WAVE2_GROUP]) {
+      state.mode = "respondent";
+      state.respondent = {
+        answers: {},
+        blockIndex: Math.max(0, firstWave2Index),
+        arm: FIXED_WAVE2_ARM[FIXED_WAVE2_GROUP],
+        pid: generatePid(),
+        entryWave: 2,
+        submitted: false,
+        stage1Label: null,
+        stage2Label: null,
+        ended: false,
+        endMessage: "",
+      };
+      return;
+    }
+
+    const params = getUrlParams();
     if (params.wave === "2" && params.pid && params.arm && ARMS.indexOf(params.arm) !== -1) {
       state.mode = "respondent";
       state.respondent = {

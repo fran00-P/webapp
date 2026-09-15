@@ -103,18 +103,48 @@ Editor nunca manda nada -- solo Encuestado, y solo al terminar cada ola.
 5. Copiar la URL que termina en `/exec` y pegarla como valor de
    `SURVEY_ENDPOINT` en `webapp/site/config.js`. Volver a publicar/subir
    `site/` (por ejemplo, `git push` si usás GitHub Pages).
-6. Para que la invitación a la Ola 2 se mande sola 7 días después: en el
-   editor de Apps Script, ícono del reloj (Activadores) → Agregar activador
-   → función `sendOla2Invites` → evento "Basado en tiempo" → "Temporizador
-   de días" → una vez al día. Sin este paso, las respuestas de la Ola 1 se
-   guardan igual, pero nadie recibe el email de la Ola 2.
+6. *(Opcional -- ver más abajo "Ola 2: link fijo por grupo").* Si igual
+   querés tener el email automático de invitación a la Ola 2 como respaldo:
+   en el editor de Apps Script, ícono del reloj (Activadores) → Agregar
+   activador → función `sendOla2Invites` → evento "Basado en tiempo" →
+   "Temporizador de días" → una vez al día.
 
 Cada respuesta completa (Ola 1 u Ola 2) se guarda como una fila, con una
 columna por pregunta más `pid` (identificador de esa persona, generado en
-el navegador), `wave` (1 o 2), `arm` (el brazo que le tocó) y `timestamp`.
-Las dos olas de una misma persona se identifican por tener el mismo `pid` --
-para juntarlas en una sola fila por persona a la hora de analizar, hay que
-hacer un `merge`/`VLOOKUP` por `pid` (esto no lo hace la planilla sola).
+el navegador), `wave` (1 o 2), `arm` y `timestamp`. Cómo juntar las dos olas
+de una misma persona depende de por qué entrada llegó la Ola 2 (ver la
+sección siguiente):
+
+- Si entró por el **link automático** (`?wave=2&pid=...&arm=...`): su `pid`
+  es el mismo que en su fila de la Ola 1 -- juntar con `merge`/`VLOOKUP` por
+  `pid`, y `arm` ya viene con el brazo real que le tocó (T0/T*/T1/T3/T4/T5).
+- Si entró por uno de los **dos links fijos de Ola 2** (`ola2_tratados.html`
+  / `ola2_control.html`): su `pid` de Ola 2 es nuevo y no coincide con el de
+  su Ola 1, así que hay que juntar por **email** en cambio (columna
+  `O2T_Email` u `O2C_Email` de la fila de Ola 2, contra `B0_Email` de su
+  fila de Ola 1). Además, en estas filas `arm` NO es el brazo real -- va a
+  decir `"TRATADO"` (grupo tratado, sin precisar cuál de los 5 brazos le
+  tocó) o `"T0"` (control, ese sí exacto). El brazo real de esa persona está
+  en su fila de Ola 1, identificable por el email.
+
+## Ola 2: link fijo por grupo (reemplaza al email automático)
+
+En vez de que cada persona reciba un email individual con un link que ya
+trae su `pid`/`arm` (`sendOla2Invites`, arriba), hay dos páginas con un
+único link fijo, igual para todos los de ese grupo, para compartir a mano
+en la segunda semana:
+
+- `site/ola2_tratados.html` -- para todo el grupo tratado (T*/T1/T3/T4/T5).
+- `site/ola2_control.html` -- para el grupo control (T0).
+
+Arrancan directo en la Ola 2 correspondiente (sin selector de modo ni botón
+de reiniciar, igual que `encuestado.html`), y como el link no trae ningún
+dato de la persona, la primera pregunta le pide que escriba el mismo email
+que usó en la Ola 1 -- es lo que permite juntar después las dos filas (ver
+arriba). El trigger `sendOla2Invites` queda en el código sin usarse por
+default; si en algún momento se prefiere volver al email automático
+personalizado, alcanza con activar el trigger del punto 6 y usar
+`site/encuestado.html?wave=2&pid=...&arm=...` en vez de estos dos links.
 
 Mientras `SURVEY_ENDPOINT` diga `"COMPLETAR..."`, la encuesta funciona
 igual (se puede completar en modo Encuestado) pero ninguna respuesta se
@@ -189,7 +219,9 @@ webapp/
 │   └── Code.gs             <- backend: guarda respuestas + manda invitación a Ola 2
 └── site/
     ├── index.html           <- Editor de previsualización (uso interno)
-    ├── encuestado.html       <- página pública para participantes reales
+    ├── encuestado.html       <- página pública, Ola 1 (participantes reales)
+    ├── ola2_tratados.html    <- página pública, Ola 2 -- grupo tratado
+    ├── ola2_control.html     <- página pública, Ola 2 -- grupo control
     ├── style.css
     ├── config.js            <- SURVEY_ENDPOINT (la URL del backend). Editar a mano.
     ├── app.js               <- motor genérico (lee data.js y renderiza todo;

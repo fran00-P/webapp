@@ -1,7 +1,12 @@
 /**
  * Backend de la encuesta "Uso del celular" -- guarda cada respuesta como una
- * fila en esta planilla de Google, y manda por email la invitación a la
- * Ola 2 siete días después de que alguien termina la Ola 1.
+ * fila en esta planilla de Google. También puede mandar por email la
+ * invitación a la Ola 2 siete días después de que alguien termina la Ola 1
+ * (función sendOla2Invites, paso 8 más abajo), pero eso es OPCIONAL: por
+ * default la Ola 2 se reparte con dos links fijos, uno por grupo
+ * (site/ola2_tratados.html y site/ola2_control.html -- ver el README,
+ * sección "Ola 2: link fijo por grupo"), sin necesidad de este email
+ * automático.
  *
  * CÓMO INSTALAR (una sola vez):
  *   1. Crear una planilla nueva en Google Sheets (el nombre no importa).
@@ -21,12 +26,12 @@
  *      Autorizá los permisos que pida Google (es tu propia cuenta).
  *   7. Copiar la URL que te da (termina en /exec) y pegarla como
  *      SURVEY_ENDPOINT en webapp/site/config.js.
- *   8. Para que la invitación a la Ola 2 se mande sola: en el editor de
- *      Apps Script, ícono del reloj (Activadores/Triggers) de la barra
- *      lateral > Agregar activador > función "sendOla2Invites", evento
- *      "Basado en tiempo" > "Temporizador de días" > una vez al día (elegí
- *      el horario que prefieras). Sin este paso, las respuestas de la Ola 1
- *      se guardan bien, pero nadie recibe el email de la Ola 2.
+ *   8. (Opcional) Si además de los dos links fijos de Ola 2 querés el email
+ *      automático de invitación como respaldo: en el editor de Apps Script,
+ *      ícono del reloj (Activadores/Triggers) de la barra lateral > Agregar
+ *      activador > función "sendOla2Invites", evento "Basado en tiempo" >
+ *      "Temporizador de días" > una vez al día (elegí el horario que
+ *      prefieras).
  *
  * Cada vez que cambies este código en el editor de Apps Script, hay que
  * hacer "Implementar > Administrar implementaciones > editar (lápiz) >

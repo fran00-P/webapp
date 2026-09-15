@@ -60,13 +60,12 @@ terminando hoy (se usa en Ola 1 y en Ola 2 -- Tratados); "prior_week" son los
 son los últimos 7 días terminando hoy (Ola 2 -- Control, "esta semana": mismo
 cálculo que "last7", nombre distinto por claridad de dónde se usa cada uno).
 
-Terminología: "apertura" y "desbloqueo" se usan como sinónimos en todo el
-cuestionario, para nombrar la métrica que Bienestar Digital (Android) /
-Tiempo de Uso (iOS) reporta como cantidad de veces que se encendió y
-desbloqueó la pantalla. Se define explícitamente la primera vez que aparece
-(B5_Aperturas) y se repite igual en las preguntas siguientes que miden lo
-mismo, para que no parezcan métricas distintas. La app y las pantallas de uso
-del celular se nombran siempre igual: "Bienestar Digital/Tiempo de Uso".
+La app y las pantallas de uso del celular se nombran siempre igual:
+"Bienestar Digital/Tiempo de Uso".
+
+NOTA: las preguntas de "aperturas/desbloqueos" (B5_Aperturas en Ola 1;
+O2T_Aperturas y O2C_AperturasSemana1/2 en Ola 2) se sacaron de la encuesta a
+pedido del usuario -- ya no se pregunta esa métrica en ninguna ola.
 
 Diseño experimental (6 ramas): T0, T*, T1, T3, T4, T5 -- ver ARMS/ARM_LABELS.
 El campo "Tratado" (ver display_if) es 1 para toda rama que NO es T0, y
@@ -438,21 +437,6 @@ BLOCKS = [
                 "n_rows": 5,
             },
             {
-                "id": "B5_Aperturas",
-                "type": "number_input",
-                "text": (
-                    "¿Cuántas veces en total abriste el celular en {{VENTANA}}? (Esto es "
-                    "lo que la pantalla de Bienestar Digital/Tiempo de Uso llama "
-                    "\"aperturas\" o \"desbloqueos\": cada vez que encendiste la pantalla "
-                    "y la desbloqueaste, aunque haya sido solo por unos segundos. Usamos "
-                    "\"apertura\" y \"desbloqueo\" como sinónimos en toda la encuesta.)"
-                ),
-                "date_window": "last7",
-                "min": 0,
-                "max": 500,
-                "force": True,
-            },
-            {
                 # Se sacó "force": True a pedido del usuario -- ahora es
                 # opcional, no bloquea el avance si no se sube nada.
                 "id": "B5_Captura",
@@ -709,6 +693,21 @@ BLOCKS = [
         "section": "Tu uso esta semana",
         "questions": [
             {
+                # Se entra a esta Ola 2 por un link fijo, compartido con todo
+                # el grupo (ver ola2_tratados.html), no por un link
+                # personalizado con pid/arm -- así que hace falta que la
+                # persona se autoidentifique para poder juntar esta fila con
+                # la de su Ola 1 (por email, no por pid).
+                "id": "O2T_Email",
+                "type": "email",
+                "section_override": "Antes de empezar",
+                "text": (
+                    "Para juntar esta respuesta con la de la primera parte, escribí el "
+                    "mismo email que usaste ahí."
+                ),
+                "force": True,
+            },
+            {
                 "id": "O2T_Intro",
                 "type": "text_display",
                 "text": (
@@ -736,15 +735,6 @@ BLOCKS = [
                 "n_rows": 5,
             },
             {
-                "id": "O2T_Aperturas",
-                "type": "number_input",
-                "text": "¿Cuántas veces abriste el celular (aperturas/desbloqueos) en {{VENTANA}}?",
-                "date_window": "last7",
-                "min": 0,
-                "max": 500,
-                "force": True,
-            },
-            {
                 # Misma lógica que B5_Captura: opcional, mismo link/imagen
                 # de referencia, por consistencia entre las 4 preguntas de
                 # captura de la encuesta (ver nota en B5_Captura).
@@ -767,6 +757,18 @@ BLOCKS = [
         "title": "Ola 2 -- Medición real retrospectiva (control)",
         "display_if": {"field": "Tratado", "op": "eq", "value": 0},
         "questions": [
+            {
+                # Ver nota en O2T_Email -- misma lógica, para el link fijo
+                # ola2_control.html.
+                "id": "O2C_Email",
+                "type": "email",
+                "section_override": "Antes de empezar",
+                "text": (
+                    "Para juntar esta respuesta con la de la primera parte, escribí el "
+                    "mismo email que usaste ahí."
+                ),
+                "force": True,
+            },
             {
                 "id": "O2C_Intro",
                 "type": "text_display",
@@ -797,15 +799,6 @@ BLOCKS = [
                 "text": "Las 5 apps que más tiempo te consumieron en {{VENTANA}}, con su tiempo de uso (ej: 2h 30m):",
                 "date_window": "prior_week",
                 "n_rows": 5,
-            },
-            {
-                "id": "O2C_AperturasSemana1",
-                "type": "number_input",
-                "text": "¿Cuántas veces abriste el celular (aperturas/desbloqueos) en {{VENTANA}}?",
-                "date_window": "prior_week",
-                "min": 0,
-                "max": 500,
-                "force": True,
             },
             {
                 # Misma lógica que B5_Captura (ver nota ahí): opcional, mismo
@@ -842,15 +835,6 @@ BLOCKS = [
                 "text": "Las 5 apps que más tiempo te consumieron en {{VENTANA}}, con su tiempo de uso (ej: 2h 30m):",
                 "date_window": "current_week",
                 "n_rows": 5,
-            },
-            {
-                "id": "O2C_AperturasSemana2",
-                "type": "number_input",
-                "text": "¿Cuántas veces abriste el celular (aperturas/desbloqueos) en {{VENTANA}}?",
-                "date_window": "current_week",
-                "min": 0,
-                "max": 500,
-                "force": True,
             },
             {
                 # Misma lógica que B5_Captura (ver nota ahí): opcional, mismo

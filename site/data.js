@@ -263,15 +263,6 @@ window.SURVEY_DATA = {
           "n_rows": 5
         },
         {
-          "id": "B5_Aperturas",
-          "type": "number_input",
-          "text": "¿Cuántas veces en total abriste el celular en {{VENTANA}}? (Esto es lo que la pantalla de Bienestar Digital/Tiempo de Uso llama \"aperturas\" o \"desbloqueos\": cada vez que encendiste la pantalla y la desbloqueaste, aunque haya sido solo por unos segundos. Usamos \"apertura\" y \"desbloqueo\" como sinónimos en toda la encuesta.)",
-          "date_window": "last7",
-          "min": 0,
-          "max": 500,
-          "force": true
-        },
-        {
           "id": "B5_Captura",
           "type": "file_upload",
           "text": "Subí una captura de pantalla de esa vista (opcional).",
@@ -450,6 +441,13 @@ window.SURVEY_DATA = {
       "section": "Tu uso esta semana",
       "questions": [
         {
+          "id": "O2T_Email",
+          "type": "email",
+          "section_override": "Antes de empezar",
+          "text": "Para juntar esta respuesta con la de la primera parte, escribí el mismo email que usaste ahí.",
+          "force": true
+        },
+        {
           "id": "O2T_Intro",
           "type": "text_display",
           "text": "¡Hola de nuevo! Ya pasó una semana. Abrí de nuevo Bienestar Digital/Tiempo de Uso y mirá el resumen de {{VENTANA}}.",
@@ -471,15 +469,6 @@ window.SURVEY_DATA = {
           "n_rows": 5
         },
         {
-          "id": "O2T_Aperturas",
-          "type": "number_input",
-          "text": "¿Cuántas veces abriste el celular (aperturas/desbloqueos) en {{VENTANA}}?",
-          "date_window": "last7",
-          "min": 0,
-          "max": 500,
-          "force": true
-        },
-        {
           "id": "O2T_Captura",
           "type": "file_upload",
           "text": "Subí una captura de {{VENTANA}} (opcional).",
@@ -499,6 +488,13 @@ window.SURVEY_DATA = {
         "value": 0
       },
       "questions": [
+        {
+          "id": "O2C_Email",
+          "type": "email",
+          "section_override": "Antes de empezar",
+          "text": "Para juntar esta respuesta con la de la primera parte, escribí el mismo email que usaste ahí.",
+          "force": true
+        },
         {
           "id": "O2C_Intro",
           "type": "text_display",
@@ -525,15 +521,6 @@ window.SURVEY_DATA = {
           "text": "Las 5 apps que más tiempo te consumieron en {{VENTANA}}, con su tiempo de uso (ej: 2h 30m):",
           "date_window": "prior_week",
           "n_rows": 5
-        },
-        {
-          "id": "O2C_AperturasSemana1",
-          "type": "number_input",
-          "text": "¿Cuántas veces abriste el celular (aperturas/desbloqueos) en {{VENTANA}}?",
-          "date_window": "prior_week",
-          "min": 0,
-          "max": 500,
-          "force": true
         },
         {
           "id": "O2C_CapturaSemana1",
@@ -564,15 +551,6 @@ window.SURVEY_DATA = {
           "text": "Las 5 apps que más tiempo te consumieron en {{VENTANA}}, con su tiempo de uso (ej: 2h 30m):",
           "date_window": "current_week",
           "n_rows": 5
-        },
-        {
-          "id": "O2C_AperturasSemana2",
-          "type": "number_input",
-          "text": "¿Cuántas veces abriste el celular (aperturas/desbloqueos) en {{VENTANA}}?",
-          "date_window": "current_week",
-          "min": 0,
-          "max": 500,
-          "force": true
         },
         {
           "id": "O2C_CapturaSemana2",
