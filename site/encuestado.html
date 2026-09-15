@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Hábitos cotidianos y uso del celular</title>
+<link rel="stylesheet" href="style.css" />
+</head>
+<!--
+  Página "estrictamente Encuestado": es la misma encuesta que index.html
+  (el Editor de previsualización), pero arranca directo en modo Encuestado,
+  sin selector de modo y sin botón de reiniciar -- pensada para mandarle el
+  link a quien va a responder de verdad, sin exponerle ningún control de
+  revisión. Toda la lógica y el contenido vienen de los mismos data.js/
+  app.js/style.css que el Editor; lo único que cambia es la bandera
+  window.LOCKED_RESPONDENT (ver app.js) y esta clase en <body>.
+-->
+<body class="locked-respondent">
+
+<header id="top-bar">
+  <div id="top-bar-left">
+    <h1>Hábitos cotidianos y uso del celular</h1>
+  </div>
+  <div id="top-bar-right">
+    <label id="mode-switcher">
+      Modo:
+      <select id="mode-select">
+        <option value="editor">Editor (previsualización)</option>
+        <option value="respondent">Encuestado (completar de verdad)</option>
+      </select>
+    </label>
+    <button id="restart-btn" type="button" style="display:none;">Reiniciar encuesta</button>
+  </div>
+</header>
+
+<div id="app">
+
+  <aside id="sidebar">
+    <div id="editor-controls" class="panel">
+      <h2>Controles de previsualización</h2>
+      <label>
+        Rama a previsualizar:
+        <select id="arm-select"></select>
+      </label>
+      <p class="hint">
+        Cambiá de rama en cualquier momento. Los bloques que no aplican a la
+        rama elegida (por ejemplo, la Medición real para el Control) se
+        muestran igual pero marcados como <em>"no se le muestra a esta
+        rama"</em>, para que puedas revisar el contenido de todas formas.
+      </p>
+      <div id="block-nav">
+        <h3>Bloques</h3>
+        <ol id="block-list"></ol>
+      </div>
+    </div>
+
+  </aside>
+
+  <main id="content">
+    <div id="block-render"></div>
+    <div id="nav-buttons">
+      <button id="prev-btn" type="button">&larr; Anterior</button>
+      <button id="next-btn" type="button">Siguiente &rarr;</button>
+    </div>
+    <p id="validation-msg" class="validation"></p>
+  </main>
+
+</div>
+
+<footer>
+  <p>
+    Prototipo generado para revisar el flujo de la encuesta antes de
+    implementarla en Qualtrics. No envía datos a ningún servidor -- todo
+    corre localmente en el navegador.
+  </p>
+</footer>
+
+<script src="config.js"></script>
+<script src="data.js"></script>
+<script>
+  // Arranca esta página directo en modo Encuestado, sin selector de modo ni
+  // botón de reiniciar (ver LOCKED_RESPONDENT en app.js). Tiene que
+  // ejecutarse antes de app.js.
+  window.LOCKED_RESPONDENT = true;
+</script>
+<script src="app.js"></script>
+</body>
+</html>

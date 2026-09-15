@@ -1,0 +1,6 @@
+# Bytecode de Python (se regenera solo, no hace falta versionarlo)
+__pycache__/
+*.pyc
+
+# Archivos de sistema
+.DS_Store
