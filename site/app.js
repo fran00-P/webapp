@@ -525,9 +525,17 @@
         // línea, para no perder los minutos de precisión que sí tiene el
         // dato de origen (lo que muestra la pantalla de Tiempo de uso del
         // celular) sin pedirle a nadie que piense en decimales de hora.
+        const field = el("div", { class: "hm-field" });
         const wrap = el("div", { class: "hm-row" });
         const cur = value || {};
         const maxHours = q.max_hours !== undefined ? q.max_hours : 24;
+        // Preguntas de TOTAL semanal (max_hours=168, ver B2_PriorHoras y
+        // B5_HorasReales/O2*_HorasReales): en pruebas, gente confundió esto
+        // con un promedio diario y cargó, por ejemplo, "3 horas" en vez de
+        // "21 horas". Para eso: (a) un recordatorio fijo junto al selector,
+        // y (b) un cálculo en vivo del equivalente por día, para que la
+        // persona pueda notar sola si el número que eligió es razonable.
+        const isWeeklyTotal = maxHours > 24;
 
         const hoursSel = el("select", {});
         hoursSel.appendChild(el("option", { value: "" }, [document.createTextNode("-- horas --")]));
@@ -546,12 +554,33 @@
           minutesSel.appendChild(o);
         });
 
+        const checkLine = isWeeklyTotal ? el("div", { class: "hm-check" }) : null;
+
+        function updateCheckLine() {
+          if (!checkLine) return;
+          if (hoursSel.value === "") {
+            checkLine.textContent = "";
+            checkLine.style.display = "none";
+            return;
+          }
+          const totalMinutes = Number(hoursSel.value) * 60 + Number(minutesSel.value);
+          const perDayMinutes = totalMinutes / 7;
+          const perDayH = Math.floor(perDayMinutes / 60);
+          const perDayM = Math.round(perDayMinutes % 60);
+          checkLine.style.display = "";
+          checkLine.textContent =
+            "↳ eso es un total de 7 días -- equivale a un promedio de " +
+            perDayH + "h " + perDayM + "min por día. Si vos pensaste en un solo día, corregí arriba.";
+        }
+
         function emit() {
           if (hoursSel.value === "") {
             onChange(undefined);
+            updateCheckLine();
             return;
           }
           onChange({ h: Number(hoursSel.value), m: Number(minutesSel.value) });
+          updateCheckLine();
         }
         hoursSel.addEventListener("change", emit);
         minutesSel.addEventListener("change", emit);
@@ -560,7 +589,21 @@
         wrap.appendChild(el("span", { class: "hm-unit" }, [document.createTextNode("h")]));
         wrap.appendChild(minutesSel);
         wrap.appendChild(el("span", { class: "hm-unit" }, [document.createTextNode("min")]));
-        return wrap;
+        field.appendChild(wrap);
+
+        if (isWeeklyTotal) {
+          field.appendChild(
+            el("div", { class: "hint hm-reminder" }, [
+              document.createTextNode(
+                "Recordá: es el TOTAL de los últimos 7 días, no el promedio de un solo día."
+              ),
+            ])
+          );
+          updateCheckLine();
+          field.appendChild(checkLine);
+        }
+
+        return field;
       }
 
       case "number_slider": {

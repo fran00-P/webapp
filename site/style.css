@@ -299,6 +299,25 @@ table.ranking td, table.ranking th {
   margin-right: 6px;
 }
 
+.hm-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.hm-reminder {
+  font-weight: 600;
+}
+
+.hm-check {
+  font-size: 0.82rem;
+  color: var(--muted);
+  background: rgba(0, 0, 0, 0.04);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 6px 8px;
+}
+
 #nav-buttons {
   display: flex;
   justify-content: space-between;

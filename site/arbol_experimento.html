@@ -1,0 +1,327 @@
+<title>Árbol del Experimento</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,500&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap');
+
+  :root{
+    --bg: #f6f6f3;
+    --surface: #ffffff;
+    --surface-2: #edeeea;
+    --ink: #171a1e;
+    --ink-muted: #5c6370;
+    --line: #d7d9d4;
+    --trunk: #3454d1;
+    --trunk-soft: #e8ecfb;
+
+    --t0: #82868f;      --t0-bg: #eef0f2;
+    --tstar: #1f8f88;   --tstar-bg: #e3f4f2;
+    --t1: #3b62d6;      --t1-bg: #e9edfc;
+    --t3: #a9741c;      --t3-bg: #faf1de;
+    --t4: #bd3b4d;      --t4-bg: #fbe9ec;
+    --t5: #2f8f3c;      --t5-bg: #e7f4e8;
+
+    color-scheme: light;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg: #10131a;
+      --surface: #171b24;
+      --surface-2: #1d2230;
+      --ink: #edf0f5;
+      --ink-muted: #98a1b3;
+      --line: #2b3140;
+      --trunk: #7c93f2;
+      --trunk-soft: #202a4a;
+
+      --t0: #a6abb6;      --t0-bg: #23262d;
+      --tstar: #58cec5;   --tstar-bg: #17282a;
+      --t1: #8ba1ef;      --t1-bg: #1b2440;
+      --t3: #e0ac52;      --t3-bg: #2e2416;
+      --t4: #ea7688;      --t4-bg: #33191d;
+      --t5: #6bc474;      --t5-bg: #182c1b;
+      color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg: #10131a;
+    --surface: #171b24;
+    --surface-2: #1d2230;
+    --ink: #edf0f5;
+    --ink-muted: #98a1b3;
+    --line: #2b3140;
+    --trunk: #7c93f2;
+    --trunk-soft: #202a4a;
+
+    --t0: #a6abb6;      --t0-bg: #23262d;
+    --tstar: #58cec5;   --tstar-bg: #17282a;
+    --t1: #8ba1ef;      --t1-bg: #1b2440;
+    --t3: #e0ac52;      --t3-bg: #2e2416;
+    --t4: #ea7688;      --t4-bg: #33191d;
+    --t5: #6bc474;      --t5-bg: #182c1b;
+    color-scheme: dark;
+  }
+
+  *{ box-sizing: border-box; }
+  body{
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'IBM Plex Sans', ui-sans-serif, system-ui, sans-serif;
+    padding-inline: 16px;
+    padding-block: 28px 48px;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+  h1, h2, h3{ font-family: 'Fraunces', Georgia, serif; font-weight: 600; margin: 0; text-wrap: balance; }
+  .mono{ font-family: 'IBM Plex Mono', ui-monospace, monospace; }
+
+  /* ---------- header ---------- */
+  header{ max-width: 720px; margin: 0 auto 32px; text-align: center; }
+  .eyebrow{
+    font-family: 'IBM Plex Mono', monospace; font-size: 12.5px; letter-spacing: .09em;
+    text-transform: uppercase; color: var(--trunk); margin-bottom: 10px; font-weight: 600;
+  }
+  header h1{ font-size: clamp(1.6rem, 4vw, 2.3rem); font-style: italic; }
+  header p{ color: var(--ink-muted); font-size: 15px; line-height: 1.55; margin: 14px auto 0; max-width: 62ch; }
+
+  .stats{ display:flex; justify-content:center; gap: 10px; flex-wrap: wrap; margin-top: 20px; }
+  .stat{
+    background: var(--surface); border: 1px solid var(--line); border-radius: 10px;
+    padding: 8px 16px; text-align:center; min-width: 92px;
+  }
+  .stat b{ display:block; font-family:'IBM Plex Mono',monospace; font-variant-numeric: tabular-nums; font-size: 18px; color: var(--trunk); }
+  .stat span{ font-size: 11px; color: var(--ink-muted); text-transform: uppercase; letter-spacing: .04em; }
+
+  /* ---------- pre-tree steps ---------- */
+  .steps{
+    display:flex; align-items:stretch; justify-content:center; gap: 0; margin: 0 auto 8px; max-width: 780px;
+    flex-wrap: wrap;
+  }
+  .step{
+    flex: 1 1 200px; background: var(--surface); border: 1px solid var(--line); border-radius: 10px;
+    padding: 12px 14px; position: relative; margin: 6px;
+  }
+  .step .k{ font-family:'IBM Plex Mono',monospace; font-size: 11px; color: var(--ink-muted); text-transform: uppercase; letter-spacing:.05em; }
+  .step p{ margin: 4px 0 0; font-size: 13.5px; line-height: 1.4; }
+  .step-arrow{ align-self:center; color: var(--ink-muted); font-size: 18px; padding: 0 2px; }
+  @media (max-width: 640px){ .step-arrow{ display:none; } }
+
+  /* ---------- tree (desktop: classic CSS org-chart) ---------- */
+  .tree, .tree ul, .tree li{ list-style:none; margin:0; padding:0; position:relative; }
+  .tree{ text-align:center; margin-top: 26px; }
+  .tree ul{ display:flex; padding-top: 22px; }
+  .tree > ul{ display:flex; justify-content:center; padding-top:0; }
+  .tree li{ display:flex; flex-direction:column; align-items:center; padding: 22px 12px 0; position:relative; }
+  .tree li::before, .tree li::after{
+    content:''; position:absolute; top:0; right:50%; border-top: 2px solid var(--line); width:50%; height: 22px;
+  }
+  .tree li::after{ right:auto; left:50%; border-left: 2px solid var(--line); }
+  .tree li:only-child{ padding-top:0; }
+  .tree li:only-child::before, .tree li:only-child::after{ display:none; }
+  .tree li:first-child::before, .tree li:last-child::after{ border:0 none; }
+  .tree li:last-child::before{ border-right: 2px solid var(--line); border-radius: 0 6px 0 0; }
+  .tree li:first-child::after{ border-radius: 6px 0 0 0; }
+  .tree > ul > li::before, .tree > ul > li::after, .tree > ul::before{ display:none !important; }
+  .tree ul::before{
+    content:''; position:absolute; top:0; left:50%; border-left: 2px solid var(--line); width:0; height:22px;
+  }
+
+  .node{
+    border-radius: 12px; padding: 12px 16px; font-size: 14px; line-height:1.35;
+    border: 1px solid var(--line); background: var(--surface); min-width: 150px;
+  }
+  .node.root{ background: var(--trunk-soft); border-color: var(--trunk); font-weight:600; max-width: 260px; }
+  .node.root .mono{ display:block; font-size:11px; color:var(--trunk); margin-top:3px; }
+  .node.branch{ font-weight:600; max-width: 210px; background: var(--surface-2); }
+  .node.branch small{ display:block; font-weight:400; color: var(--ink-muted); margin-top:4px; font-size:12px; }
+
+  /* leaves as <details> */
+  details.leaf{
+    width: 190px; text-align:left; border-radius: 12px; border: 1px solid var(--line);
+    background: var(--surface); overflow:hidden;
+  }
+  details.leaf > summary{
+    list-style:none; cursor:pointer; padding: 12px 14px; display:flex; flex-direction:column; gap:2px;
+    border-left: 5px solid var(--c); background: var(--c-bg);
+  }
+  details.leaf > summary::-webkit-details-marker{ display:none; }
+  details.leaf > summary .code{ font-family:'IBM Plex Mono',monospace; font-weight:600; font-size: 13px; color: var(--c); }
+  details.leaf > summary .name{ font-weight:600; font-size: 13.5px; }
+  details.leaf > summary .prob{ font-size: 10.5px; color: var(--ink-muted); font-family:'IBM Plex Mono',monospace; margin-top:2px; }
+  details.leaf > summary .toggle{ position:absolute; margin-left:auto; }
+  details.leaf .body{ padding: 12px 14px 14px; font-size: 12.8px; line-height:1.5; border-top:1px solid var(--line); }
+  details.leaf .body dt{ font-weight:600; font-size:11px; text-transform:uppercase; letter-spacing:.03em; color:var(--c); margin-top:10px; }
+  details.leaf .body dt:first-child{ margin-top:0; }
+  details.leaf .body dd{ margin:3px 0 0; color: var(--ink); }
+  details.leaf .body cite{ display:block; font-style:normal; color:var(--ink-muted); font-size:11.5px; margin-top:3px; }
+
+  .leaf.t0    { --c: var(--t0);    --c-bg: var(--t0-bg); }
+  .leaf.tstar { --c: var(--tstar); --c-bg: var(--tstar-bg); }
+  .leaf.t1    { --c: var(--t1);    --c-bg: var(--t1-bg); }
+  .leaf.t3    { --c: var(--t3);    --c-bg: var(--t3-bg); }
+  .leaf.t4    { --c: var(--t4);    --c-bg: var(--t4-bg); }
+  .leaf.t5    { --c: var(--t5);    --c-bg: var(--t5-bg); }
+
+  details.leaf[open] > summary{ border-bottom: 1px solid var(--line); }
+
+  /* mobile: collapse tree connectors into an indented outline */
+  @media (max-width: 760px){
+    .tree{ text-align:left; }
+    .tree, .tree ul{ display:block; }
+    .tree li{ display:block; padding: 14px 0 0 18px; }
+    .tree li::before, .tree li::after, .tree ul::before{ display:none; }
+    .tree > ul > li{ padding-left:0; }
+    .tree ul li{ border-left: 2px solid var(--line); margin-left: 6px; }
+    .node.root, .node.branch{ max-width: none; width: 100%; margin-bottom: 4px; }
+    details.leaf{ width: 100%; margin: 6px 0 10px; }
+  }
+
+  /* ---------- convergence + legend ---------- */
+  .converge{
+    max-width: 640px; margin: 34px auto 0; background: var(--surface); border: 1px solid var(--line);
+    border-radius: 14px; padding: 18px 20px; text-align:center;
+  }
+  .converge h3{ font-size: 15px; font-style: italic; }
+  .converge p{ font-size: 13.5px; color: var(--ink-muted); line-height:1.55; margin: 8px 0 0; }
+
+  .legend{ display:flex; flex-wrap:wrap; justify-content:center; gap: 10px 16px; margin: 26px auto 0; max-width: 780px; }
+  .legend .item{ display:flex; align-items:center; gap:6px; font-size:12px; color:var(--ink-muted); }
+  .legend .dot{ width:9px; height:9px; border-radius:50%; background:var(--c); }
+  .legend .t0{ --c: var(--t0); } .legend .tstar{ --c: var(--tstar); } .legend .t1{ --c: var(--t1); }
+  .legend .t3{ --c: var(--t3); } .legend .t4{ --c: var(--t4); } .legend .t5{ --c: var(--t5); }
+
+  footer{ text-align:center; margin-top: 30px; }
+  footer a{ color: var(--trunk); font-size: 12.5px; text-decoration: none; }
+  footer a:hover{ text-decoration: underline; }
+</style>
+
+<header>
+  <div class="eyebrow">Francisco A. Paz — UdeSA, 2026</div>
+  <h1>De las creencias al comportamiento: evidencia experimental sobre el uso del celular</h1>
+  <p>A continuación se describe cómo se ramifica la encuesta; haciendo clic en cada brazo se
+  puede obtener más información.</p>
+  <div class="stats">
+    <div class="stat"><b>6</b><span>brazos</span></div>
+    <div class="stat"><b>1/6</b><span>por brazo</span></div>
+    <div class="stat"><b>2</b><span>olas</span></div>
+    <div class="stat"><b>7</b><span>días entre olas</span></div>
+  </div>
+</header>
+
+<div class="steps">
+  <div class="step"><div class="k">Antes de aleatorizar · 1</div><p>Declara cuánto <b>cree</b> que usó el celular la última semana (Prior).</p></div>
+  <div class="step-arrow">→</div>
+  <div class="step"><div class="k">Antes de aleatorizar · 2</div><p>Responde el bloque de autocontrol (Likert). Todavía nadie sabe a qué brazo va.</p></div>
+  <div class="step-arrow">→</div>
+  <div class="step"><div class="k">Aleatorización</div><p>El servidor sortea el brazo: <b>probabilidad 1/6</b>, igual para los seis — invisible para quien responde.</p></div>
+</div>
+<p style="text-align:center; font-size:12.5px; color:var(--ink-muted); max-width:620px; margin:10px auto 0;">
+  Recién <b>después</b> de aleatorizar se le pide a la persona que revise Bienestar
+  Digital/Tiempo de Uso y reporte su uso real — y eso pasa distinto según el brazo: T0 no lo
+  ve en absoluto en la Ola 1; los otros cinco sí.
+</p>
+
+<div class="tree">
+  <ul>
+    <li>
+      <div class="node root">Aleatorización<span class="mono">1 de 6 brazos, misma probabilidad</span></div>
+      <ul>
+        <li>
+          <div class="node branch">Sin mensaje de tratamiento<small>nadie ve un mensaje comparativo (T0 tampoco mide su uso real)</small></div>
+          <ul>
+            <li>
+              <details class="leaf t0">
+                <summary><span class="code">T0</span><span class="name">Control</span><span class="prob">p = 1/6</span></summary>
+                <dl class="body">
+                  <dt>Qué recibe</dt>
+                  <dd>Después del sorteo, no revisa Bienestar Digital ni reporta su uso real en la Ola 1 — pero sí llega al mismo punto de la encuesta que T* y recibe ahí un <b>mensaje placebo</b>: un texto neutro sobre percepción de estímulos visuales, que no menciona celular, pantallas ni ninguna consecuencia del uso. Sirve para igualar la carga de lectura frente a T*, sin darle ninguna información de tratamiento.</dd>
+                  <dt>Mecanismo</dt>
+                  <dd>Ninguno — es la base de comparación de todo el experimento.</dd>
+                </dl>
+              </details>
+            </li>
+            <li>
+              <details class="leaf tstar">
+                <summary><span class="code">T*</span><span class="name">Feedback de uso real</span><span class="prob">p = 1/6</span></summary>
+                <dl class="body">
+                  <dt>Qué recibe</dt>
+                  <dd>Después del sorteo, se le pide revisar Bienestar Digital y reportar su uso real (igual que T1/T3/T4/T5) pero luego recibe el mismo <b>mensaje placebo</b> neutro que T0, en vez de la comparación Prior-Real.</dd>
+                  <dt>Mecanismo</dt>
+                  <dd>Aísla el efecto de la mera automedición: "medirse" sin "ser informado por otro".</dd>
+                </dl>
+              </details>
+            </li>
+          </ul>
+        </li>
+        <li>
+          <div class="node branch">Con mensaje: brecha creencia vs. realidad<small>después del sorteo, miden su uso real y ven la comparación Prior–Real</small></div>
+          <ul>
+            <li>
+              <details class="leaf t1">
+                <summary><span class="code">T1</span><span class="name">Información pura</span><span class="prob">p = 1/6</span></summary>
+                <dl class="body">
+                  <dt>Qué recibe</dt>
+                  <dd>La comparación explícita: "Dijiste que usaste X h; en realidad usaste Y h" (diferencia en horas y %). Sin ningún mensaje adicional.</dd>
+                  <dt>Mecanismo</dt>
+                  <dd>Corrección de la creencia sobre el propio pasado — el mensaje base que comparten T3, T4 y T5.</dd>
+                </dl>
+              </details>
+            </li>
+            <li>
+              <details class="leaf t3">
+                <summary><span class="code">T3</span><span class="name">Costo de oportunidad</span><span class="prob">p = 1/6</span></summary>
+                <dl class="body">
+                  <dt>Qué recibe</dt>
+                  <dd>Mensaje de T1 + una proyección personalizada en años de vida (con su edad y su uso real) contra la esperanza de vida en Argentina (77,3 años, INDEC/ONU 2023).</dd>
+                  <dt>Mecanismo</dt>
+                  <dd>Saliencia del costo de oportunidad de largo plazo: traduce horas en algo tangible.</dd>
+                </dl>
+              </details>
+            </li>
+            <li>
+              <details class="leaf t4">
+                <summary><span class="code">T4</span><span class="name">Información de daño</span><span class="prob">p = 1/6</span></summary>
+                <dl class="body">
+                  <dt>Qué recibe</dt>
+                  <dd>Mensaje de T1 + evidencia sobre uso compulsivo, memoria de trabajo y sueño (CONICET Mendoza/LiNEL; experimento de A. Ward).</dd>
+                  <dt>Mecanismo</dt>
+                  <dd>Aversión a un daño concreto ya documentado, no abstracto.</dd>
+                </dl>
+              </details>
+            </li>
+            <li>
+              <details class="leaf t5">
+                <summary><span class="code">T5</span><span class="name">Guía de acción</span><span class="prob">p = 1/6</span></summary>
+                <dl class="body">
+                  <dt>Qué recibe</dt>
+                  <dd>Mensaje de T1 + tips concretos y accionables (modo escala de grises, sacar apps de la pantalla principal — Defensoría del Pueblo de PBA, 2025).</dd>
+                  <dt>Mecanismo</dt>
+                  <dd>Resuelve la brecha entre <i>querer</i> reducir el uso y <i>poder</i> hacerlo.</dd>
+                </dl>
+              </details>
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</div>
+
+<div class="legend">
+  <div class="item t0"><span class="dot"></span>T0 control</div>
+  <div class="item tstar"><span class="dot"></span>T* medición sola</div>
+  <div class="item t1"><span class="dot"></span>T1 información</div>
+  <div class="item t3"><span class="dot"></span>T3 costo de oportunidad</div>
+  <div class="item t4"><span class="dot"></span>T4 daño</div>
+  <div class="item t5"><span class="dot"></span>T5 acción</div>
+</div>
+
+<div class="converge">
+  <h3>Una semana después (Ola 2), los seis brazos vuelven a converger</h3>
+  <p>Todas las personas —sin importar su brazo— revisan de nuevo Bienestar Digital/Tiempo
+  de Uso y reportan su uso real. Esa segunda medición es el outcome principal ($Y_i$): el
+  que muestra si el efecto fue un cambio de comportamiento real, y no solo una intención
+  declarada el mismo día del mensaje.</p>
+</div>
+
+<footer>
+  <a href="https://fran00-p.github.io/webapp/site/encuestado.html" target="_blank" rel="noopener">Ver la encuesta en vivo →</a>
+</footer>
