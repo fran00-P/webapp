@@ -322,6 +322,255 @@
   declarada el mismo día del mensaje.</p>
 </div>
 
+<div class="chapter-break" style="text-align:center; max-width:560px; margin:60px auto 30px; padding-top:30px; border-top:1px solid var(--line);">
+  <p style="font-family:'Fraunces', serif; font-style:italic; font-size:1.25rem; margin:0;">Cada brazo ve algo distinto en pantalla. Esto es, palabra por palabra, lo que recibe cada grupo.</p>
+</div>
+
+<!-- ================= Qué mensaje recibe cada grupo (scroll) ================= -->
+<style>
+  .scrolly{ margin-top: 10px; }
+  .scrolly-grid{ display:grid; grid-template-columns: 1fr 1fr; gap: 28px; align-items: start; }
+  .scrolly-sticky{ position: sticky; top: 18px; align-self: start; }
+  .scrolly-steps{ display:flex; flex-direction:column; }
+  .mstep{
+    min-height: 66vh; display:flex; flex-direction:column; justify-content:center;
+    padding: 24px 4px; opacity: .32; transition: opacity .35s ease;
+  }
+  .mstep.is-active{ opacity: 1; }
+  .mstep .step-eyebrow{
+    font-family:'IBM Plex Mono',monospace; font-size:11.5px; letter-spacing:.08em; text-transform:uppercase;
+    color: var(--trunk); font-weight:600; margin-bottom:8px;
+  }
+  .mstep h3{ font-size: 1.35rem; font-style: italic; margin-bottom: 8px; }
+  .mstep p{ font-size: 14px; line-height:1.6; color: var(--ink-muted); max-width: 46ch; }
+  .mstep p b{ color: var(--ink); }
+  .mstep:first-child{ min-height: 46vh; }
+  .mstep:last-child{ min-height: 50vh; }
+
+  @media (max-width: 760px){
+    .scrolly-grid{ grid-template-columns: 1fr; }
+    .scrolly-sticky{ position: sticky; top: 0; padding-top: 10px; background: var(--bg); z-index: 2; }
+    .mstep{ min-height: 42vh; }
+  }
+
+  .panel-card{
+    background: var(--surface); border: 1px solid var(--line); border-radius: 16px;
+    padding: 22px 20px 20px; position:relative; overflow:hidden;
+  }
+  .panel-counter{
+    font-family:'IBM Plex Mono',monospace; font-size:11px; color: var(--ink-muted);
+    letter-spacing:.05em; margin-bottom: 14px;
+  }
+  .panel-counter b{ color: var(--trunk); font-variant-numeric: tabular-nums; }
+
+  .message-card{ display:none; }
+  .message-card.tv-visible{ display:block; }
+  .msg-meta{
+    font-family:'IBM Plex Mono',monospace; font-size:11px; color: var(--ink-muted);
+    text-transform:uppercase; letter-spacing:.05em; margin-bottom: 12px;
+  }
+  .msg-box{
+    border-radius: 10px; padding: 14px 16px; font-size: 13.5px; line-height:1.55;
+    border: 1px solid var(--bx); background: var(--bx-bg); border-left: 5px solid var(--bx);
+  }
+  .msg-box + .msg-box{ margin-top: 14px; }
+  .msg-box .msg-title{
+    display:block; font-weight:700; font-size:11px; text-transform:uppercase; letter-spacing:.04em;
+    color: var(--bx); margin-bottom: 8px;
+  }
+  .msg-box ul{ margin: 8px 0 0; padding-left: 20px; }
+  .msg-box li{ margin-bottom: 6px; }
+  .msg-box.comparison{ --bx: #2f5d50; --bx-bg: #e8f0ee; }
+  .msg-box.nudge{ --bx: #c9a227; --bx-bg: #fdf8ee; }
+  .msg-box.placebo{ --bx: #9a9a9a; --bx-bg: #f4f4f4; }
+  .msg-source{ font-size: 11.5px; color: var(--ink-muted); margin-top: 10px; }
+
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]) .msg-box.comparison{ --bx:#6fae9d; --bx-bg:#16211d; }
+    :root:not([data-theme="light"]) .msg-box.nudge{ --bx:#e0b94a; --bx-bg:#2a2313; }
+    :root:not([data-theme="light"]) .msg-box.placebo{ --bx:#a9a9a9; --bx-bg:#202225; }
+  }
+  :root[data-theme="dark"] .msg-box.comparison{ --bx:#6fae9d; --bx-bg:#16211d; }
+  :root[data-theme="dark"] .msg-box.nudge{ --bx:#e0b94a; --bx-bg:#2a2313; }
+  :root[data-theme="dark"] .msg-box.placebo{ --bx:#a9a9a9; --bx-bg:#202225; }
+</style>
+
+<section class="scrolly" id="scrolly-messages">
+  <div class="scrolly-grid">
+    <div class="scrolly-sticky">
+      <div class="panel-card">
+        <div class="panel-counter">Paso <b id="msg-counter">1</b> / 5</div>
+
+        <div class="message-card" data-show="placebo">
+          <div class="msg-meta">Lo que ve T0 y T*</div>
+          <div class="msg-box placebo">
+            <span class="msg-title">Información general (placebo)</span>
+            Las personas pueden percibir de manera diferente determinados estímulos visuales.
+            La interpretación de una imagen puede depender de las características del
+            estímulo y de la información disponible en el momento de observarlo. Por esta
+            razón, un mismo estímulo puede ser interpretado de distintas maneras por
+            diferentes personas.
+          </div>
+        </div>
+
+        <div class="message-card" data-show="t1">
+          <div class="msg-meta">Lo que ve T1</div>
+          <div class="msg-box comparison">
+            <span class="msg-title">Tu resultado</span>
+            Vos dijiste que habías usado <b>21h 0m (ejemplo)</b> la semana pasada. Según tu
+            propio celular, en realidad usaste <b>14h 0m (ejemplo)</b>.<br><br>
+            Eso es <b>7h 0m menos</b> de lo que habías estimado — un <b>33%</b> por debajo de
+            tu propia percepción.
+          </div>
+        </div>
+
+        <div class="message-card" data-show="t3">
+          <div class="msg-meta">Lo que ve T3 (además de la caja de arriba)</div>
+          <div class="msg-box comparison">
+            <span class="msg-title">Tu resultado</span>
+            Vos dijiste que habías usado <b>21h 0m (ejemplo)</b> la semana pasada. Según tu
+            propio celular, en realidad usaste <b>14h 0m (ejemplo)</b>.<br><br>
+            Eso es <b>7h 0m menos</b> de lo que habías estimado — un <b>33%</b> por debajo de
+            tu propia percepción.
+          </div>
+          <div class="msg-box nudge">
+            <span class="msg-title">Costo de oportunidad</span>
+            Pensá lo que implica sostener ese ritmo en el tiempo: la esperanza de vida en
+            Argentina es de <b>77,3 años</b> (INDEC/Naciones Unidas, 2023). Vos tenés <b>25
+            años (ejemplo)</b>, así que — en promedio — te quedarían unos <b>52 años más</b>
+            de vida.<br><br>Si mantenés un uso de <b>2.0 horas por día</b> durante todo ese
+            tiempo, vas a haber pasado el equivalente a <b>más de 4 años enteros</b> — día y
+            noche, sin parar — mirando la pantalla.
+          </div>
+        </div>
+
+        <div class="message-card" data-show="t4">
+          <div class="msg-meta">Lo que ve T4 (además de la caja de arriba)</div>
+          <div class="msg-box comparison">
+            <span class="msg-title">Tu resultado</span>
+            Vos dijiste que habías usado <b>21h 0m (ejemplo)</b> la semana pasada. Según tu
+            propio celular, en realidad usaste <b>14h 0m (ejemplo)</b>.<br><br>
+            Eso es <b>7h 0m menos</b> de lo que habías estimado — un <b>33%</b> por debajo de
+            tu propia percepción.
+          </div>
+          <div class="msg-box nudge">
+            <span class="msg-title">Información de daño</span>
+            Esto no es un dato aislado: investigadores del CONICET Mendoza (INCIHUSA, grupo
+            LiNEL) encontraron que el uso intensivo de redes sociales desde el celular está
+            asociado a una mayor necesidad de pasar cada vez más tiempo conectados, al uso en
+            momentos donde no corresponde (como en clase o en el trabajo) y a más dificultad
+            para controlar los impulsos. Otras investigaciones que citan esos mismos
+            investigadores muestran, además, que el solo hecho de tener el celular a la
+            vista — sin siquiera usarlo — redujo el rendimiento en pruebas de memoria de
+            trabajo en un experimento de Adrian Ward y su equipo, y que usarlo antes de
+            dormir está vinculado a una peor calidad del sueño.
+          </div>
+        </div>
+
+        <div class="message-card" data-show="t5">
+          <div class="msg-meta">Lo que ve T5 (además de la caja de arriba)</div>
+          <div class="msg-box comparison">
+            <span class="msg-title">Tu resultado</span>
+            Vos dijiste que habías usado <b>21h 0m (ejemplo)</b> la semana pasada. Según tu
+            propio celular, en realidad usaste <b>14h 0m (ejemplo)</b>.<br><br>
+            Eso es <b>7h 0m menos</b> de lo que habías estimado — un <b>33%</b> por debajo de
+            tu propia percepción.
+          </div>
+          <div class="msg-box nudge">
+            <span class="msg-title">Guía de acción</span>
+            Si te interesa reducir tu uso, estos son algunos tips concretos y simples para
+            lograrlo (Defensoría del Pueblo de la Provincia de Buenos Aires, 2025):
+            <ul>
+              <li><b>Activar el modo escala de grises:</b> le saca color a la pantalla y la
+              vuelve menos atractiva.</li>
+              <li><b>Sacar de la pantalla principal las apps que más tiempo te consumen:</b>
+              agrega fricción antes de abrirlas.</li>
+              <li><b>Desactivar las notificaciones push:</b> reduce los estímulos que te
+              llevan a revisar el celular sin querer.</li>
+            </ul>
+            <div class="msg-source">Según Zimmermann &amp; Sobolev (2020/2023), en un
+            experimento de campo las personas que activaron el modo escala de grises
+            redujeron su uso del celular de forma inmediata y significativa.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="scrolly-steps">
+      <div class="mstep" data-set="placebo">
+        <div class="step-eyebrow">Grupo T0 y T*</div>
+        <h3>El placebo</h3>
+        <p>Mismo texto, misma posición para ambos. No menciona celular, pantallas ni ninguna
+        consecuencia del uso — solo <b>iguala la carga de lectura</b> frente a los demás
+        brazos.</p>
+      </div>
+      <div class="mstep" data-set="t1">
+        <div class="step-eyebrow">Grupo T1</div>
+        <h3>Información pura</h3>
+        <p>La comparación entre lo que dijo y lo que en realidad usó, sin agregar nada más. Es
+        <b>el tratamiento completo</b> para este grupo.</p>
+      </div>
+      <div class="mstep" data-set="t3">
+        <div class="step-eyebrow">Grupo T3</div>
+        <h3>Costo de oportunidad</h3>
+        <p>A la comparación de arriba se le suma una proyección en <b>años de vida</b>,
+        calculada con la edad real y el uso real de cada persona.</p>
+      </div>
+      <div class="mstep" data-set="t4">
+        <div class="step-eyebrow">Grupo T4</div>
+        <h3>Información de daño</h3>
+        <p>A la comparación se le suma evidencia sobre uso compulsivo, memoria de trabajo y
+        sueño (CONICET Mendoza; experimento de A. Ward).</p>
+      </div>
+      <div class="mstep" data-set="t5">
+        <div class="step-eyebrow">Grupo T5</div>
+        <h3>Guía de acción</h3>
+        <p>A la comparación se le suma una lista de tips concretos y accionables, con
+        evidencia causal de Zimmermann &amp; Sobolev.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
 <footer>
   <a href="https://fran00-p.github.io/webapp/site/encuestado.html" target="_blank" rel="noopener">Ver la encuesta en vivo →</a>
 </footer>
+
+<script>
+(function(){
+  function setupScrolly(sectionId, counterId, onStep){
+    var section = document.getElementById(sectionId);
+    if (!section) return;
+    var steps = Array.prototype.slice.call(section.querySelectorAll('.mstep'));
+    var counterEl = document.getElementById(counterId);
+
+    var observer = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        if (entry.isIntersecting){
+          steps.forEach(function(s){ s.classList.remove('is-active'); });
+          entry.target.classList.add('is-active');
+          var stepName = entry.target.getAttribute('data-set');
+          var idx = steps.indexOf(entry.target) + 1;
+          if (counterEl) counterEl.textContent = idx;
+          onStep(stepName);
+        }
+      });
+    }, { root: null, rootMargin: '-40% 0px -40% 0px', threshold: 0 });
+
+    steps.forEach(function(s){ observer.observe(s); });
+    if (steps.length){
+      steps[0].classList.add('is-active');
+      onStep(steps[0].getAttribute('data-set'));
+    }
+  }
+
+  function onMessageStep(step){
+    var cards = document.querySelectorAll('#scrolly-messages .message-card');
+    cards.forEach(function(c){
+      c.classList.toggle('tv-visible', c.getAttribute('data-show') === step);
+    });
+  }
+
+  setupScrolly('scrolly-messages', 'msg-counter', onMessageStep);
+})();
+</script>
